@@ -1,4 +1,5 @@
 exit=1;
+
 while [[$exit -eq 1 ]]
 do
 echo “1. Menu Kalkulator Loop”;
@@ -40,3 +41,4 @@ then
  exit=0;
  fi
 done
+
