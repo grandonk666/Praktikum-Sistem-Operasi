@@ -1,5 +1,3 @@
-clear
-
 echo “Masukkan Input dalam menit :“;
 read menit;
 
