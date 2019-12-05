@@ -1,224 +1,247 @@
-clear
-i=0
-declare -a nama
-declare -a kode
-declare -a lahir
-declare -a mati
-declare -a agama
+declare -a id
+declare -a jenis
+declare -a status
+declare -a harga
+declare -a pukul
 
-cetak()
-{
-	echo -e "Data yang telah dimasukkan : \n"			
-		for (( q=0; q<i;q++  ))
-		do
-			echo -e "Data ke $[q+1]\nNama Mayat            : ${nama[q]}\nNomor Kematian        : ${kode[q]}\nTempat, tanggal lahir : ${lahir[q]}\nTempat, tanggal wafat : ${mati[q]}\nAgama                 : ${agama[q]}\n"
-		done
+i=0
+n=0
+
+
+insert(){
+    flag=0
+    echo -n "ID Barang                  : "
+    read id_temp
+    echo -n "Jenis Barang               : "
+    read jenis_temp
+    echo -n "Merek Baranng              : "
+    read merek_temp
+    echo -n "Status Barang(Baru/Bekas)  : "
+    read status_temp
+    echo -n "Harga barang               : "
+    read harga_temp
+
+    for nomor_cari in ${id[*]}
+    do
+        if [[ $nomor_cari -eq $id_temp ]]
+        then
+            flag=1
+            break
+        fi
+    done
+
+    if [[ $flag -eq 1 ]]
+    then
+        echo "Barang sudah ada"
+    else
+        id[$i]=$id_temp
+        jenis[$i]=$jenis_temp
+        merek[$i]=$merek_temp
+        status[$i]=$status_temp
+        harga[$i]=$harga_temp
+        i=$i+1
+        n=$n+1
+    fi
+}
+
+view(){
+    if [[ $n -eq 0 ]]
+    then
+        echo "Tidak ada barang yang tersedia"
+    fi
+
+    for((i=0;i<n;i++))
+    do
+        echo "========================================="
+        echo "ID                : ${id[$i]}"
+        echo "Jenis             : ${jenis[$i]}"
+        echo "Merek             : ${merek[$i]}"
+        echo "Status            : ${status[$i]}"
+        echo "Harga             : ${harga[$i]}"
+        echo "========================================="
+    done
+}
+
+search(){
+    echo -n "Masukkan ID barang  : "
+    read cari
+    a=0
+
+    for((i=0;i<n;i++))
+    do
+        if [[ $cari -eq ${id[$i]} ]]
+        then
+            a=1
+            break
+        fi
+    done
+
+    if [[ $a -eq 1 ]]
+    then
+        echo "========================================="
+        echo "ID                : ${id[$i]}"
+        echo "Jenis             : ${jenis[$i]}"
+        echo "Merek             : ${merek[$i]}"
+        echo "Status            : ${status[$i]}"
+        echo "Harga             : ${harga[$i]}"
+        echo "========================================="
+    else
+        echo "Barang tidak ditemukan"
+    fi
+}
+
+update(){
+    echo -n "Masukkan ID barang : "
+    read update
+    b=0
+
+    for((i=0;i<n;i++))
+    do
+        if [[ $update -eq ${id[$i]} ]]
+        then 
+            b=1
+            break
+        fi
+    done
+
+    if [[ $b -eq 1 ]]
+    then
+        u=0
+        echo -n "ID baru   : "
+        read id_temp
+        echo -n "Jenis     : "
+        read jenis_temp
+        echo -n "Merek     : "
+        read merek_temp
+        echo -n "Status    : "
+        read status_temp
+        echo -n "Harga     : "
+        read harga_temp
+
+        for nomor_cari in ${id[*]}
+        do
+            if [[ $nomor_cari -eq $id_temp ]]
+            then
+                u=1
+                break
+            fi
+        done
+    
+        if [[ $u -eq 1 ]]
+        then
+            echo "Barang sudah ada"
+        else
+
+        	id[$i]=$id_temp
+        	jenis[$i]=$jenis_temp
+        	merek[$i]=$merek_temp
+        	status[$i]=$status_temp
+        	harga[$i]=$harga_temp
+		fi
+	else
+		echo "Data barang belum terdaftar"
+    fi
+}
+
+buy(){
+    echo -n "Masukkan ID barang yang akan dibeli : "
+    read beli
+    c=0
+
+    for((i=0;i<n;i++))
+    do 
+        if [[ $beli -eq ${id[$i]} ]]
+        then
+            c=1
+            break
+        fi
+    done
+
+    if [[ $c -eq 1 ]]
+    then
+    	echo "Masukan Data Pembeli"
+		echo -n "Nama      : "
+		read pnama
+		echo -n "Alamat    : "
+		read palamat
+		echo -n "Nomor Hp  : "
+		read php
+		clear
+
+    	echo "========================================="
+    	echo "             NOTA PEMBELIAN              "
+    	echo "-----------------------------------------"
+    	echo "Nama         : $pnama"
+    	echo "Alamat       : $palamat"
+    	echo "Nomor Hp     : $php"
+    	echo "-----------------------------------------"
+        echo "ID Barang         : ${id[$i]}"
+        echo "Jenis             : ${jenis[$i]}"
+        echo "Merek             : ${merek[$i]}"
+        echo "Status            : ${status[$i]}"
+        echo "Harga             : ${harga[$i]}"
+        echo "========================================="
+
+        unset id[$i] 
+        unset jenis[$i]
+        unset merek[$i] 
+        unset status[$i]
+        unset harga[$i]
+
+        id=( "${id[@]}" )
+        jenis=( "${jenis[@]}" )
+        merek=( "${merek[@]}" )
+        status=( "${status[@]}" )
+        harga=( "${harga[@]}" )
+        n=$n-1
+    else
+        echo "Data barang tidak terdaftar"
+    fi
 }
 
 while :;
 do
-	echo -e "Sistem Informasi Data Mayat pada Tempat Pemakaman Umum\n\n1. Masukkan data mayat\n2. Lihat data mayat\n3. Cari data mayat\n4. Perbarui data mayat\n5. Hapus data mayat\n6. Keluar program\n"
- 	echo -n "Masukkan pilihan : "
- 	read pilih
+    echo "==========================================================="
+    echo "                  APLIKASI ADMIN                           "
+    echo "                  TOKO ALAT MUSIK                          "
+    echo "==========================================================="
+    echo ""
+    echo " 1. Input Barang Yang Tersedia"
+    echo " 2. Lihat Barang Yang Tersedia"
+    echo " 3. cari Barang"
+    echo " 4. Update Data Barang"
+    echo " 5. Beli"
+    echo " 6. Exit"
+    echo ""
+    echo -n "Pilih menu : "
+    read pilih
 
- 	if (("$pilih" == 1));   # INPUT DATA
- 	then 
-  		clear
- 	 	echo -n "Nama Mayat            : "
- 	 	read nama[$i]
- 	 	echo -n "Nomor Kematian        : "
-  		read kode[$i]
-	  	echo -n "Tempat, tanggal lahir : "
-  		read lahir[$i]
-		echo -n "Tempat, tanggal wafat : "
-  		read mati[$i]
-	  	echo -n "Agama                 : "
-  		read agama[$i]
- 	 	i=`expr $i + 1`
-		
-		if (("$i" >= 2))
-		then
-			for (( g=0; g<i-1; g++ ))
-			do
-	   			if (( "${kode[$i-1]}" == "${kode[g]}" ))
-				then
-		     			echo -e "\nNomor kematian ini sudah terdaftar!\nMasukan nomor yang lain!"
-					read
-					unset nama[$i-1]
-					unset kode[$i-1]
-					unset lahir[$i-1]
-					unset mati[$i-1]
-					unset agama[$i-1]
-					i=`expr $i - 1`
-					break
-	   			fi
-			done
-		fi
- 	 	clear
- 
- 	elif (("$pilih" == 2));   # TAMPILKAN DATA
- 	then
-  		if (( i == 0 ))
-  		then
-   			clear
-   			echo "Tidak ada data yang dapat ditampilkan"
-   			read
-   			clear
-  		else
-   			clear
-   			cetak
-   			read
-   			clear
-  		fi
-
- 	elif (("$pilih" == 3));   # CARI DATA
- 	then
-  		if (( i == 0))
-  		then
-   			clear
-   			echo "Tidak ada data yang dapat dicari"
-   			read
-   			clear
-  		else  
-   			clear
-      			echo -n "Masukkan nomor kematian yang ingin dicari : "
-      			read cari
-   
-      			k=0
-      			while (($cari != ${kode[$k]}))
-      			do
-    				k=`expr $k + 1`
-      			done
-      
-   			if (($cari == ${kode[$k]}));
-   			then
-    				echo -e "Nama Mayat            : ${nama[k]}\nNomor Kematian        : ${kode[k]}\nTempat, tanggal lahir : ${lahir[k]}\nTempat, tanggal wafat : ${mati[k]}\nAgama                 : ${agama[k]}\n"   
-
-   			else
-    				clear    
-    				echo -e "Data tidak ditemukan"
-   			fi
-   			read
-      			clear
-  		fi
-   
- 	elif (("$pilih" != 4 && "$pilih" != 2 && "$pilih" != 1 && "$pilih" != 3 && "$pilih" != 5 && "$pilih" != 6));   # APABILA MEMBERIKAN MASUKAN SELAIN 1-6
- 	then
-  		echo "Pilihan tidak valid"
-  		read
-  		clear
-
-	elif (( "$pilih" == 5 ));   # HAPUS DATA
-	then
-		if (( i == 0))
-  		then
-   			clear
-   			echo "Tidak ada data yang dapat dihapus"
-   			read
-   			clear
-  		else  
-   			clear
-   			cetak
-			echo -n "Masukkan nomor kematian : "
-      			read cari
-   
-      			k=0
-      			while (($cari != ${kode[$k]}))
-      			do
-    				k=`expr $k + 1`
-      			done
-      
-   			if (($cari == ${kode[$k]}));
-   			then			
-    				unset nama[k]
-				unset kode[k]
-				unset lahir[k]
-				unset mati[k]
-				unset agama[k]
-
-				if [[ -z ${kode[k]} ]]
-				then
-					if (($i == 1))
-					then
-						i=0
-	
-					elif (($i == 2))
-					then
-						for ((f=$k; f<i; f++))
-						do
-							nama[f]=${nama[$f+1]}
-							kode[f]=${kode[$f+1]}
-							lahir[f]=${lahir[$f+1]}
-							mati[f]=${mati[$f+1]}
-							agama[f]=${agama[$f+1]}
-						done
-						i=`expr $i - 1`
-
-					elif (($i > 2))
-					then
-						if [[ -n ${kode[$k-1]} ]]
-						then
-							for (( d=$k; d<i; d++ ))
-							do
-								nama[d]=${nama[$d+1]}
-								kode[d]=${kode[$d+1]}
-								lahir[d]=${lahir[$d+1]}
-								mati[d]=${mati[$d+1]}
-								agama[d]=${agama[$d+1]}
-							done
-						fi
-						i=`expr $i - 1`
-					fi									
-				fi
-   			else
-    				clear    
-    				echo -e "Data tidak ditemukan"
-   			fi
-   			read
-      			clear
-  		fi
-
-	elif (("$pilih" == 4));   # MEMPERBAHARUI DATA
-	then
-		if (( i == 0))
-  		then
-   			clear
-   			echo "Tidak ada data yang dapat diperbarui"
-   			read
-   			clear
-  		else  
-   			clear
-			cetak
-      			echo -e -n "\nMasukkan nomor kematian yang ingin diperbarui : "
-      			read baru
-   
-      			l=0
-      			while (($baru != ${kode[$l]}))
-      			do
-    				l=`expr $l + 1`
-      			done
-      
-   			if (($baru == ${kode[$l]}));
-   			then
-				echo -n "Nama Mayat            : "
-		 	 	read nama[$l]
-			  	echo -n "Tempat, tanggal lahir : "
-		  		read lahir[$l]
-				echo -n "Tempat, tanggal wafat : "
-		  		read mati[$l]
-			  	echo -n "Agama                 : "
-		  		read agama[$l]
-
- 	 			clear
-   			else
-    				clear    
-    				echo -e "Data tidak ditemukan"
-				read
-   			fi
-      			clear
-  		fi
- 
- 	else    # KELUAR PROGAM
-  		exit
- 	fi
+    if [[ $pilih == 1 ]]
+    then
+        clear
+        insert
+        clear
+    elif [[ $pilih == 2 ]]
+    then
+        clear
+        view
+    elif [[ $pilih == 3 ]]
+    then 
+        clear
+        search
+    elif [[ $pilih == 4 ]]
+    then
+        clear
+        update
+        clear
+    elif [[ $pilih == 5 ]]
+    then 
+        clear
+        buy
+    elif [[ $pilih == 6 ]]
+    then
+        exit
+    else
+        echo "pilihannya gaada!"
+    fi
 done
